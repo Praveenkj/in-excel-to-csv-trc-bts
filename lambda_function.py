@@ -1,9 +1,9 @@
 import pandas as pd
 import boto3
 import os
-
 # import sys
 # import subprocess
+from urllib.parse import unquote
 
 # DON'T HAVE TO RUN THE FOLLOWING SUBPROCESS. ADDED OPENPYXL AND PANDAS AS A LAMBDA LAYER
 # subprocess.call('pip install cryptography -t /tmp/ --no-cache-dir'.split(), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -25,7 +25,9 @@ def convert_excel_to_csv(event, context):
     input_bucket = event['Records'][0]['s3']['bucket']['name']
     input_key = event['Records'][0]['s3']['object']['key']
     print("input_bucket: ", input_bucket)
-    input_key = input_key.replace("%3D", "=")
+    # input_key = input_key.replace("%3D","=")
+    input_key = unquote(input_key)
+    input_key = input_key.replace("+", " ")
     print("input_key: ", input_key)
     client, excel_name = input_key.split("/")
     output_bucket = S3_OUTPUT_BUCKET
